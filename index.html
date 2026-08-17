@@ -18,9 +18,159 @@
     .prog { transition: width .7s ease; }
     ::-webkit-scrollbar { width:5px; }
     ::-webkit-scrollbar-thumb { background:#94a3b8; border-radius:3px; }
+
+    /* ── BACKGROUND LAYER ── */
+    body {
+      background-color: #f0fdf4;
+      position: relative;
+    }
+    #bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    /* Gradient overlay agar konten tetap terbaca */
+    #bg-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        160deg,
+        rgba(240,253,244,0.82) 0%,
+        rgba(236,253,245,0.75) 40%,
+        rgba(248,250,252,0.85) 100%
+      );
+    }
+    header, main { position: relative; z-index: 1; }
+
+    /* Daun bergerak perlahan */
+    .leaf-float { animation: leafFloat 8s ease-in-out infinite; transform-origin: bottom center; }
+    .leaf-float-2 { animation: leafFloat 11s ease-in-out infinite 2s; transform-origin: bottom center; }
+    .leaf-float-3 { animation: leafFloat 9s ease-in-out infinite 4s; transform-origin: bottom center; }
+    @keyframes leafFloat {
+      0%,100% { transform: rotate(0deg) translateY(0); }
+      30%      { transform: rotate(3deg) translateY(-6px); }
+      70%      { transform: rotate(-2deg) translateY(-3px); }
+    }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
+<body class="text-slate-800 min-h-screen">
+
+<!-- ═══ BACKGROUND BOTANICAL LAYER ═══ -->
+<div id="bg-layer" aria-hidden="true">
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#d1fae5;stop-opacity:1"/>
+        <stop offset="60%" style="stop-color:#ecfdf5;stop-opacity:1"/>
+        <stop offset="100%" style="stop-color:#f0fdf4;stop-opacity:1"/>
+      </linearGradient>
+      <linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#6b7280"/>
+        <stop offset="100%" style="stop-color:#9ca3af"/>
+      </linearGradient>
+    </defs>
+    <!-- Base background -->
+    <rect width="1440" height="900" fill="url(#bgGrad)"/>
+
+    <!-- ══ KIRI BAWAH: Pohon Palm Besar ══ -->
+    <g opacity="0.18" class="leaf-float">
+      <!-- Batang -->
+      <path d="M120,900 Q130,750 115,600 Q108,500 125,380" stroke="#4b5563" stroke-width="18" fill="none" stroke-linecap="round"/>
+      <!-- Daun-daun palm -->
+      <path d="M125,380 Q60,300 -20,260" stroke="#16a34a" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <path d="M125,380 Q100,280 80,200" stroke="#16a34a" stroke-width="11" fill="none" stroke-linecap="round"/>
+      <path d="M125,380 Q170,290 200,220" stroke="#16a34a" stroke-width="11" fill="none" stroke-linecap="round"/>
+      <path d="M125,380 Q200,340 260,320" stroke="#16a34a" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <path d="M125,380 Q50,380 -10,370" stroke="#15803d" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <path d="M125,380 Q140,270 160,190" stroke="#15803d" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- Sub-daun kecil -->
+      <path d="M60,300 Q40,280 20,295" stroke="#22c55e" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M80,200 Q60,185 50,200" stroke="#22c55e" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M200,220 Q220,205 215,220" stroke="#22c55e" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <!-- ══ KIRI BAWAH: Semak Monstera ══ -->
+    <g opacity="0.15" class="leaf-float-2">
+      <!-- Daun monstera berlubang kiri -->
+      <path d="M-30,900 Q20,820 60,780 Q100,740 80,700 Q60,660 100,640 Q140,620 160,660 Q180,700 150,730 Q120,760 140,790 Q160,820 130,850 Q100,880 -30,900Z" fill="#16a34a"/>
+      <path d="M80,700 Q90,680 100,690" stroke="#ecfdf5" stroke-width="3" fill="none"/>
+      <path d="M100,640 Q115,625 125,635" stroke="#ecfdf5" stroke-width="3" fill="none"/>
+      <!-- Daun monstera 2 -->
+      <path d="M-60,900 Q-10,840 30,800 Q70,760 50,720 Q30,680 70,660 Q110,640 130,680 Q150,720 120,750 Q90,780 110,810 Q130,840 100,870 Q70,895 -60,900Z" fill="#15803d" opacity="0.8"/>
+    </g>
+
+    <!-- ══ KANAN BAWAH: Pohon Ficus Besar ══ -->
+    <g opacity="0.16" class="leaf-float-3">
+      <!-- Batang -->
+      <path d="M1340,900 Q1330,780 1345,650 Q1355,560 1330,450" stroke="#4b5563" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <!-- Kanopi bulat -->
+      <ellipse cx="1310" cy="380" rx="120" ry="100" fill="#16a34a"/>
+      <ellipse cx="1370" cy="350" rx="90" ry="80" fill="#15803d"/>
+      <ellipse cx="1260" cy="400" rx="80" ry="70" fill="#22c55e" opacity="0.7"/>
+      <ellipse cx="1340" cy="310" rx="70" ry="65" fill="#14532d" opacity="0.5"/>
+      <!-- Highlight -->
+      <ellipse cx="1295" cy="355" rx="50" ry="40" fill="#4ade80" opacity="0.2"/>
+    </g>
+
+    <!-- ══ KANAN BAWAH: Semak Daun Tropis ══ -->
+    <g opacity="0.14" class="leaf-float">
+      <path d="M1440,900 Q1400,840 1380,790 Q1420,760 1440,780Z" fill="#16a34a"/>
+      <path d="M1440,860 Q1390,810 1370,760 Q1410,730 1440,750Z" fill="#15803d"/>
+      <path d="M1440,820 Q1380,780 1360,730 Q1400,700 1440,720Z" fill="#22c55e" opacity="0.8"/>
+      <!-- Daun panjang -->
+      <path d="M1440,780 Q1370,740 1350,680 Q1380,660 1410,700 Q1430,730 1440,760Z" fill="#166534"/>
+      <path d="M1440,740 Q1360,710 1340,650 Q1375,630 1405,665 Q1428,695 1440,720Z" fill="#16a34a" opacity="0.7"/>
+    </g>
+
+    <!-- ══ TENGAH ATAS: Ranting Dekoratif ══ -->
+    <g opacity="0.10" class="leaf-float-2">
+      <path d="M600,0 Q620,60 610,120 Q600,180 630,230" stroke="#4b5563" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <path d="M610,120 Q570,90 540,70" stroke="#16a34a" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M610,120 Q650,95 670,75" stroke="#16a34a" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M630,230 Q590,210 560,200" stroke="#15803d" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M630,230 Q670,210 695,200" stroke="#15803d" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- Daun kecil -->
+      <ellipse cx="540" cy="68" rx="16" ry="10" fill="#16a34a" transform="rotate(-30,540,68)"/>
+      <ellipse cx="672" cy="73" rx="16" ry="10" fill="#16a34a" transform="rotate(25,672,73)"/>
+      <ellipse cx="558" cy="198" rx="14" ry="9" fill="#15803d" transform="rotate(-20,558,198)"/>
+      <ellipse cx="697" cy="198" rx="14" ry="9" fill="#15803d" transform="rotate(20,697,198)"/>
+    </g>
+
+    <!-- ══ KIRI ATAS: Ranting ══ -->
+    <g opacity="0.09" class="leaf-float-3">
+      <path d="M0,150 Q80,140 140,160 Q200,180 240,160" stroke="#4b5563" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M80,140 Q70,90 60,60" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M140,160 Q145,100 150,70" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M200,180 Q210,120 215,90" stroke="#15803d" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="60" cy="57" rx="14" ry="9" fill="#16a34a" transform="rotate(-15,60,57)"/>
+      <ellipse cx="150" cy="66" rx="14" ry="9" fill="#16a34a" transform="rotate(10,150,66)"/>
+      <ellipse cx="215" cy="86" rx="13" ry="8" fill="#15803d" transform="rotate(5,215,86)"/>
+    </g>
+
+    <!-- ══ KANAN ATAS: Ranting Menjuntai ══ -->
+    <g opacity="0.09" class="leaf-float">
+      <path d="M1440,80 Q1370,100 1310,90 Q1260,80 1220,100" stroke="#4b5563" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M1370,100 Q1360,150 1355,180" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M1310,90 Q1300,140 1295,170" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M1260,80 Q1250,130 1245,160" stroke="#15803d" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="1355" cy="183" rx="13" ry="9" fill="#16a34a" transform="rotate(5,1355,183)"/>
+      <ellipse cx="1295" cy="173" rx="13" ry="9" fill="#16a34a" transform="rotate(-5,1295,173)"/>
+      <ellipse cx="1245" cy="163" rx="12" ry="8" fill="#15803d" transform="rotate(-8,1245,163)"/>
+    </g>
+
+    <!-- ══ SCATTER: Daun kecil melayang ══ -->
+    <g opacity="0.07">
+      <ellipse cx="350" cy="200" rx="18" ry="11" fill="#16a34a" transform="rotate(20,350,200)"/>
+      <ellipse cx="800" cy="150" rx="15" ry="9" fill="#15803d" transform="rotate(-15,800,150)"/>
+      <ellipse cx="1050" cy="250" rx="16" ry="10" fill="#22c55e" transform="rotate(30,1050,250)"/>
+      <ellipse cx="450" cy="750" rx="14" ry="8" fill="#16a34a" transform="rotate(-25,450,750)"/>
+      <ellipse cx="950" cy="700" rx="17" ry="10" fill="#15803d" transform="rotate(15,950,700)"/>
+    </g>
+  </svg>
+</div>
 
 <!-- TOPBAR -->
 <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
