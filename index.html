@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdant PaaS — Plant-as-a-Service</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .fade-in { animation: fadeIn 0.2s ease-out; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .modal-backdrop { backdrop-filter: blur(6px); }
+    .scan-line { animation: scan 1.8s linear infinite; }
+    @keyframes scan { 0%,100% { top:8%; } 50% { top:82%; } }
+    .pulse { animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(1.25); } }
+    .prog { transition: width .7s ease; }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-thumb { background:#94a3b8; border-radius:3px; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+<!-- TOPBAR -->
+<header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center shadow">
+        <i data-lucide="leaf" class="text-white" style="width:19px;height:19px"></i>
+      </div>
+      <div class="leading-tight">
+        <span class="font-bold text-slate-800">Verdant</span><span class="font-light text-emerald-600"> PaaS</span>
+        <p class="text-[10px] text-slate-400">Plant-as-a-Service</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+      <button id="btn-client" onclick="switchRole('client')"
+        class="role-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+        <i data-lucide="building-2" style="width:13px;height:13px"></i><span class="hidden sm:inline">Klien B2B</span>
+      </button>
+      <button id="btn-field" onclick="switchRole('field')"
+        class="role-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+        <i data-lucide="hard-hat" style="width:13px;height:13px"></i><span class="hidden sm:inline">Staf Lapangan</span>
+      </button>
+      <button id="btn-admin" onclick="switchRole('admin')"
+        class="role-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+        <i data-lucide="shield-check" style="width:13px;height:13px"></i><span class="hidden sm:inline">Admin / Owner</span>
+      </button>
+    </div>
+    <div class="hidden md:flex items-center gap-2">
+      <span id="hdr-label" class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200"></span>
+      <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+        <i data-lucide="user" class="text-emerald-700" style="width:15px;height:15px"></i>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODUL 1 — PORTAL KLIEN B2B                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="module-client" class="module hidden fade-in">
+
+  <!-- Profile Banner -->
+  <div class="bg-gradient-to-r from-emerald-700 to-emerald-500 rounded-2xl p-6 mb-6 text-white shadow-lg">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center border border-white/30">
+          <i data-lucide="building-2" class="text-white" style="width:28px;height:28px"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">PT Tech Nusantara</h1>
+          <p class="text-emerald-100 text-sm">Jl. Sudirman Kav. 52-53, Jakarta Selatan</p>
+          <span class="mt-1 inline-block bg-white/20 border border-white/30 text-xs px-2.5 py-0.5 rounded-full font-medium">
+            Paket Premium · 50 Pot
+          </span>
+        </div>
+      </div>
+      <div class="flex flex-col items-start sm:items-end gap-1 text-sm">
+        <span class="text-emerald-100 text-xs">Kontrak Aktif</span>
+        <span class="font-semibold">Jan 2026 — Des 2026</span>
+        <span class="flex items-center gap-1 text-emerald-200 text-xs">
+          <i data-lucide="calendar-check" style="width:12px;height:12px"></i>
+          Maintenance: Senin, 24 Agt 2026
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Total Pot</span>
+        <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
+          <i data-lucide="flower-2" class="text-slate-500" style="width:15px;height:15px"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-slate-800">50</p>
+      <p class="text-xs text-slate-400 mt-1">Pot tersewa aktif</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Segar</span>
+        <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
+          <i data-lucide="check-circle" class="text-emerald-500" style="width:15px;height:15px"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-emerald-600">44</p>
+      <p class="text-xs text-slate-400 mt-1">Kondisi baik</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Perlu Ganti</span>
+        <div class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
+          <i data-lucide="alert-triangle" class="text-amber-500" style="width:15px;height:15px"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-amber-500">6</p>
+      <p class="text-xs text-slate-400 mt-1">Layu / perlu ganti</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Maintenance</span>
+        <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+          <i data-lucide="calendar" class="text-blue-500" style="width:15px;height:15px"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-blue-600">3</p>
+      <p class="text-xs text-slate-400 mt-1">Hari lagi</p>
+    </div>
+  </div>
+
+  <!-- Inventory -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-100">
+    <div class="flex flex-wrap items-center justify-between gap-3 p-5 border-b border-slate-100">
+      <div>
+        <h2 class="font-semibold text-slate-800">Inventaris Tanaman Aktif</h2>
+        <p class="text-xs text-slate-400 mt-0.5">25 pot ditampilkan dari 50 total</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="openModal('modal-sla')"
+          class="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition-colors shadow-sm">
+          <i data-lucide="plus-circle" style="width:14px;height:14px"></i> Ajukan Penggantian
+        </button>
+        <button onclick="openModal('modal-esg')"
+          class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition-colors shadow-sm">
+          <i data-lucide="bar-chart-2" style="width:14px;height:14px"></i> ESG Report
+        </button>
+      </div>
+    </div>
+    <div id="plant-grid" class="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODUL 2 — STAF LAPANGAN                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="module-field" class="module hidden fade-in">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Dashboard Staf Lapangan</h1>
+      <p class="text-slate-500 text-sm mt-0.5">Senin, 17 Agustus 2026 · Teknisi: <span class="font-semibold text-emerald-700">Budi Santoso</span></p>
+    </div>
+    <div class="flex gap-3">
+      <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2 text-center">
+        <p class="text-[10px] text-slate-500 uppercase font-semibold">Selesai</p>
+        <p class="text-xl font-bold text-emerald-600" id="field-done-count">0</p>
+      </div>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-center">
+        <p class="text-[10px] text-slate-500 uppercase font-semibold">Total</p>
+        <p class="text-xl font-bold text-slate-700">4</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    <!-- Route List -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+      <h2 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+        <i data-lucide="map-pin" class="text-emerald-600" style="width:17px;height:17px"></i> Rute Harian
+      </h2>
+      <div id="route-list" class="space-y-2"></div>
+    </div>
+
+    <!-- Active Location -->
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-slate-800 flex items-center gap-2">
+          <span class="w-2 h-2 bg-emerald-500 rounded-full pulse inline-block"></span>
+          Lokasi Aktif
+        </h2>
+        <button onclick="openModal('modal-qr')"
+          class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg font-semibold transition-colors">
+          <i data-lucide="scan-line" style="width:14px;height:14px"></i> Scan QR Pot
+        </button>
+      </div>
+
+      <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-5">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="font-bold text-slate-800">PT Tech Nusantara</h3>
+            <p class="text-slate-500 text-sm">Jl. Sudirman Kav. 52-53, Lt. 12 — Jakarta Selatan</p>
+            <div class="flex items-center gap-4 mt-2 text-sm text-slate-600">
+              <span class="flex items-center gap-1"><i data-lucide="flower-2" style="width:13px;height:13px"></i> 50 Pot</span>
+              <span class="flex items-center gap-1"><i data-lucide="clock" style="width:13px;height:13px"></i> ±90 menit</span>
+            </div>
+          </div>
+          <span class="bg-amber-100 text-amber-700 text-xs px-2.5 py-1 rounded-full font-semibold border border-amber-200 flex-shrink-0">2 Tiket SLA</span>
+        </div>
+      </div>
+
+      <h3 class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-3">Checklist Pekerjaan Rutin</h3>
+      <div id="field-checklist" class="space-y-2 mb-5"></div>
+
+      <button onclick="confirmFieldWork()"
+        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm">
+        <i data-lucide="check-circle-2" style="width:17px;height:17px"></i>
+        Konfirmasi Penyelesaian Lokasi
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODUL 3 — ADMIN / BUSINESS OWNER              -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="module-admin" class="module hidden fade-in">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Admin Kebun & Business Dashboard</h1>
+      <p class="text-slate-500 text-sm mt-0.5">Verdant PaaS · Agustus 2026</p>
+    </div>
+    <span class="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-3 py-1.5 rounded-full font-semibold">
+      <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full pulse"></span> Sistem Aktif
+    </span>
+  </div>
+
+  <!-- Business Metrics -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-xl p-5 text-white shadow-md">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-emerald-100 text-[10px] font-semibold uppercase tracking-wide">MRR</span>
+        <i data-lucide="trending-up" class="text-emerald-200" style="width:19px;height:19px"></i>
+      </div>
+      <p class="text-3xl font-bold">Rp 42,5 Jt</p>
+      <p class="text-emerald-200 text-xs mt-1">+12% dari bulan lalu</p>
+    </div>
+    <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Pot Tersewa</span>
+        <i data-lucide="package-check" class="text-emerald-500" style="width:19px;height:19px"></i>
+      </div>
+      <p class="text-3xl font-bold text-slate-800">287</p>
+      <p class="text-slate-400 text-xs mt-1 mb-2">dari 320 aset total</p>
+      <div class="bg-slate-100 rounded-full h-1.5">
+        <div class="bg-emerald-500 h-1.5 rounded-full prog" style="width:89.7%"></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Stok Karantina</span>
+        <i data-lucide="flask-conical" class="text-slate-400" style="width:19px;height:19px"></i>
+      </div>
+      <p class="text-3xl font-bold text-slate-600">33</p>
+      <p class="text-slate-400 text-xs mt-1">Pot dalam pemulihan</p>
+    </div>
+    <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Tiket SLA Aktif</span>
+        <i data-lucide="alarm-clock" class="text-amber-500" style="width:19px;height:19px"></i>
+      </div>
+      <p class="text-3xl font-bold text-amber-500" id="sla-count">6</p>
+      <p class="text-slate-400 text-xs mt-1">Menunggu penugasan</p>
+    </div>
+  </div>
+
+  <!-- SLA Table -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-100">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div>
+        <h2 class="font-semibold text-slate-800">Antrian Tiket Penggantian SLA</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Tiket yang menunggu penugasan kurir</p>
+      </div>
+      <span id="sla-badge" class="bg-amber-100 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full border border-amber-200">6 Tiket Aktif</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wide">
+            <th class="text-left px-5 py-3 font-semibold">ID Tiket</th>
+            <th class="text-left px-5 py-3 font-semibold">Klien</th>
+            <th class="text-left px-5 py-3 font-semibold">ID Pot</th>
+            <th class="text-left px-5 py-3 font-semibold">Kendala</th>
+            <th class="text-left px-5 py-3 font-semibold">Sisa SLA</th>
+            <th class="text-left px-5 py-3 font-semibold">Status</th>
+            <th class="text-left px-5 py-3 font-semibold">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="sla-tbody" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODAL 1 — FORM TIKET SLA                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="modal-sla" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="modal-backdrop absolute inset-0 bg-slate-900/50" onclick="closeModal('modal-sla')"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg fade-in overflow-y-auto max-h-[90vh]">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-amber-100 rounded-lg flex items-center justify-center">
+          <i data-lucide="file-plus-2" class="text-amber-600" style="width:17px;height:17px"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-800">Ajukan Penggantian Tanaman</h3>
+          <p class="text-xs text-slate-400">Form SLA Ticket</p>
+        </div>
+      </div>
+      <button onclick="closeModal('modal-sla')" class="text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" style="width:19px;height:19px"></i>
+      </button>
+    </div>
+    <form class="p-5 space-y-4" onsubmit="submitSla(event)">
+      <div>
+        <label class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">Pilih ID Pot</label>
+        <select id="sla-pot" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+          <option value="">-- Pilih ID Pot --</option>
+          <option>POT-003 — Sansevieria (Meja Resepsionis)</option>
+          <option>POT-007 — Peace Lily (Lobby Lt. 3)</option>
+          <option>POT-012 — Dracaena (Tangga Utama)</option>
+          <option>POT-019 — Succulent Mix (Window Sill Lt.1)</option>
+          <option>POT-024 — Pilea Peperomioides (Ruang Arsip)</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">Jenis Kendala</label>
+        <select class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+          <option>Tanaman layu / mati</option>
+          <option>Daun menguning parah</option>
+          <option>Hama / penyakit tanaman</option>
+          <option>Pot pecah / rusak</option>
+          <option>Media tanam bermasalah</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">Deskripsi</label>
+        <textarea rows="3" placeholder="Jelaskan kondisi tanaman secara singkat..."
+          class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
+      </div>
+      <div>
+        <label class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">Upload Foto (Opsional)</label>
+        <div id="upload-zone" onclick="document.getElementById('file-inp').click()"
+          class="border-2 border-dashed border-slate-200 rounded-xl p-5 text-center cursor-pointer hover:border-emerald-400 hover:bg-emerald-50 transition-colors">
+          <i data-lucide="image-plus" class="mx-auto text-slate-300 mb-2" style="width:30px;height:30px"></i>
+          <p class="text-sm text-slate-400">Klik untuk upload foto</p>
+          <p class="text-xs text-slate-300 mt-0.5">PNG, JPG maks 5MB</p>
+        </div>
+        <input type="file" id="file-inp" accept="image/*" class="hidden" onchange="previewImg(event)" />
+        <div id="img-preview" class="hidden mt-3">
+          <img id="preview-img" src="" class="w-full h-36 object-cover rounded-lg border border-slate-200" />
+          <button type="button" onclick="clearPreview()" class="mt-1 text-xs text-red-400 hover:text-red-600">Hapus foto</button>
+        </div>
+      </div>
+      <div class="flex gap-3 pt-1">
+        <button type="button" onclick="closeModal('modal-sla')"
+          class="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+          Batal
+        </button>
+        <button type="submit"
+          class="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
+          Kirim Tiket SLA
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODAL 2 — ESG REPORT                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="modal-esg" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="modal-backdrop absolute inset-0 bg-slate-900/50" onclick="closeModal('modal-esg')"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl fade-in overflow-y-auto max-h-[90vh]">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-emerald-100 rounded-lg flex items-center justify-center">
+          <i data-lucide="leaf" class="text-emerald-600" style="width:17px;height:17px"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-800">Laporan Dampak Lingkungan</h3>
+          <p class="text-xs text-slate-400">ESG Impact Report · Agustus 2026</p>
+        </div>
+      </div>
+      <button onclick="closeModal('modal-esg')" class="text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" style="width:19px;height:19px"></i>
+      </button>
+    </div>
+    <div class="p-5">
+      <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 rounded-xl p-4 mb-4">
+        <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-wide mb-3">PT Tech Nusantara · Ringkasan Bulan Ini</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-white rounded-lg p-3 text-center shadow-sm border border-emerald-100">
+            <p class="text-2xl font-bold text-emerald-600">2.150</p>
+            <p class="text-xs text-slate-500 mt-0.5">Liter O₂ / Hari</p>
+            <p class="text-[10px] text-emerald-500 font-semibold">+8% vs bulan lalu</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 text-center shadow-sm border border-emerald-100">
+            <p class="text-2xl font-bold text-emerald-600">48,3</p>
+            <p class="text-xs text-slate-500 mt-0.5">kg CO₂ Diserap</p>
+            <p class="text-[10px] text-emerald-500 font-semibold">Per bulan</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 text-center shadow-sm border border-emerald-100">
+            <p class="text-2xl font-bold text-blue-600">15%</p>
+            <p class="text-xs text-slate-500 mt-0.5">Reduksi Debu Udara</p>
+            <p class="text-[10px] text-blue-500 font-semibold">Estimasi indoor</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 text-center shadow-sm border border-emerald-100">
+            <p class="text-2xl font-bold text-purple-600">92%</p>
+            <p class="text-xs text-slate-500 mt-0.5">Kepuasan Karyawan</p>
+            <p class="text-[10px] text-purple-500 font-semibold">Survey internal</p>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-3 mb-5">
+        <div>
+          <div class="flex justify-between text-sm mb-1.5">
+            <span class="text-slate-600 flex items-center gap-1.5">
+              <i data-lucide="recycle" class="text-emerald-500" style="width:13px;height:13px"></i>
+              Program Zero Plastic Pot
+            </span>
+            <span class="text-emerald-600 font-bold text-xs">100%</span>
+          </div>
+          <div class="bg-slate-100 rounded-full h-1.5"><div class="bg-emerald-500 h-1.5 rounded-full" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1.5">
+            <span class="text-slate-600 flex items-center gap-1.5">
+              <i data-lucide="droplets" class="text-blue-500" style="width:13px;height:13px"></i>
+              Efisiensi Air (Irigasi Tetes)
+            </span>
+            <span class="text-blue-600 font-bold text-xs">73%</span>
+          </div>
+          <div class="bg-slate-100 rounded-full h-1.5"><div class="bg-blue-400 h-1.5 rounded-full" style="width:73%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1.5">
+            <span class="text-slate-600 flex items-center gap-1.5">
+              <i data-lucide="sun" class="text-amber-500" style="width:13px;height:13px"></i>
+              Energi Terbarukan Operasional
+            </span>
+            <span class="text-amber-600 font-bold text-xs">58%</span>
+          </div>
+          <div class="bg-slate-100 rounded-full h-1.5"><div class="bg-amber-400 h-1.5 rounded-full" style="width:58%"></div></div>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="closeModal('modal-esg')"
+          class="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+          Tutup
+        </button>
+        <button onclick="downloadEsg()"
+          class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="download" style="width:14px;height:14px"></i> Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODAL 3 — QR SCANNER                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="modal-qr" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="modal-backdrop absolute inset-0 bg-slate-900/50" onclick="closeModal('modal-qr')"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm fade-in">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
+          <i data-lucide="scan-line" class="text-white" style="width:17px;height:17px"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-800">QR Code Scanner</h3>
+          <p class="text-xs text-slate-400">Arahkan ke stiker QR pada pot</p>
+        </div>
+      </div>
+      <button onclick="closeModal('modal-qr')" class="text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" style="width:19px;height:19px"></i>
+      </button>
+    </div>
+    <div class="p-5">
+      <div class="relative bg-slate-900 rounded-xl overflow-hidden mb-4" style="height:210px">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-36 h-36 border-2 border-white/30 rounded relative">
+            <span class="absolute top-0 left-0 w-5 h-5 border-t-[3px] border-l-[3px] border-emerald-400 rounded-tl"></span>
+            <span class="absolute top-0 right-0 w-5 h-5 border-t-[3px] border-r-[3px] border-emerald-400 rounded-tr"></span>
+            <span class="absolute bottom-0 left-0 w-5 h-5 border-b-[3px] border-l-[3px] border-emerald-400 rounded-bl"></span>
+            <span class="absolute bottom-0 right-0 w-5 h-5 border-b-[3px] border-r-[3px] border-emerald-400 rounded-br"></span>
+            <div class="absolute left-0 right-0 h-0.5 bg-emerald-400/60 scan-line" id="scan-bar"></div>
+          </div>
+        </div>
+        <p class="absolute bottom-3 left-0 right-0 text-center text-white/50 text-xs" id="qr-msg">Menunggu QR Code...</p>
+      </div>
+      <div id="qr-result" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="check-circle-2" class="text-emerald-600" style="width:17px;height:17px"></i>
+          <span class="font-semibold text-emerald-700 text-sm">QR Terdeteksi!</span>
+        </div>
+        <div id="qr-data" class="space-y-1 text-sm"></div>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="simulateScan()"
+          class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="zap" style="width:14px;height:14px"></i> Simulasi Scan
+        </button>
+        <button onclick="closeModal('modal-qr')"
+          class="border border-slate-200 text-slate-600 px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODAL 4 — TUGASKAN KURIR                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="modal-assign" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="modal-backdrop absolute inset-0 bg-slate-900/50" onclick="closeModal('modal-assign')"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md fade-in">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-emerald-100 rounded-lg flex items-center justify-center">
+          <i data-lucide="truck" class="text-emerald-600" style="width:17px;height:17px"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-800">Tugaskan Kurir & Ganti Tanaman</h3>
+          <p class="text-xs text-slate-400" id="assign-id">Tiket: —</p>
+        </div>
+      </div>
+      <button onclick="closeModal('modal-assign')" class="text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" style="width:19px;height:19px"></i>
+      </button>
+    </div>
+    <div class="p-5 space-y-4">
+      <div id="assign-info" class="bg-slate-50 rounded-xl p-3 text-sm text-slate-600 border border-slate-200 space-y-1"></div>
+      <div>
+        <label class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">Pilih Kurir / Teknisi</label>
+        <select class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+          <option>Budi Santoso — Zona Jakarta Selatan</option>
+          <option>Dewi Rahayu — Zona Jakarta Pusat</option>
+          <option>Arif Maulana — Zona Jakarta Barat</option>
+          <option>Siti Aminah — Zona BSD Tangerang</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">Tanaman Pengganti</label>
+        <select class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+          <option>Monstera Deliciosa (Stok: 5)</option>
+          <option>Peace Lily (Stok: 8)</option>
+          <option>Sansevieria Trifasciata (Stok: 12)</option>
+          <option>Pothos Golden (Stok: 7)</option>
+          <option>ZZ Plant (Stok: 4)</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">Jadwal Pengiriman</label>
+        <input type="date" value="2026-08-19"
+          class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+      </div>
+      <div class="flex gap-3 pt-1">
+        <button onclick="closeModal('modal-assign')"
+          class="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+          Batal
+        </button>
+        <button onclick="resolveTicket()"
+          class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="send" style="width:14px;height:14px"></i> Tugaskan & Selesaikan
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-3 text-white text-sm px-5 py-3 rounded-xl shadow-xl fade-in max-w-xs">
+  <i id="toast-icon" style="width:17px;height:17px;flex-shrink:0"></i>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+// ═══ DATA ════════════════════════════════════════════════
+const PLANTS = [
+  {id:'POT-001',name:'Monstera Deliciosa',   area:'Lobby Utama',          s:'fresh'},
+  {id:'POT-002',name:'Peace Lily',            area:'Ruang Meeting A',      s:'fresh'},
+  {id:'POT-003',name:'Sansevieria',           area:'Meja Resepsionis',     s:'wilted'},
+  {id:'POT-004',name:'Pothos Golden',         area:'Ruang Tunggu',         s:'fresh'},
+  {id:'POT-005',name:'ZZ Plant',              area:'Koridor Lt. 2',        s:'fresh'},
+  {id:'POT-006',name:'Rubber Tree',           area:'Pantry Utama',         s:'fresh'},
+  {id:'POT-007',name:'Peace Lily',            area:'Lobby Lantai 3',       s:'wilted'},
+  {id:'POT-008',name:'Philodendron',          area:'Ruang Direksi',        s:'fresh'},
+  {id:'POT-009',name:'Bird of Paradise',      area:'Lounge VIP',           s:'fresh'},
+  {id:'POT-010',name:'Calathea Ornata',       area:'Ruang HR',             s:'fresh'},
+  {id:'POT-011',name:'Aglaonema Red',         area:'Ruang Server',         s:'fresh'},
+  {id:'POT-012',name:'Dracaena Marginata',    area:'Tangga Utama',         s:'wilted'},
+  {id:'POT-013',name:'Spathiphyllum',         area:'Ruang Keuangan',       s:'fresh'},
+  {id:'POT-014',name:'Ficus Lyrata',          area:'CEO Office',           s:'fresh'},
+  {id:'POT-015',name:'Anthurium',             area:'Ruang Rapat B',        s:'fresh'},
+  {id:'POT-016',name:'Bromeliad',             area:'Cafeteria',            s:'fresh'},
+  {id:'POT-017',name:'Cactus Mix',            area:'Meja Marketing',       s:'fresh'},
+  {id:'POT-018',name:'Aloe Vera',             area:'Toilet Eksekutif',     s:'fresh'},
+  {id:'POT-019',name:'Succulent Mix',         area:'Window Sill Lt.1',     s:'wilted'},
+  {id:'POT-020',name:'Orchid White',          area:'Reception Desk',       s:'fresh'},
+  {id:'POT-021',name:'Monstera Adansonii',    area:'Ruang Kreatif',        s:'fresh'},
+  {id:'POT-022',name:'Pothos Neon',           area:'Meja Developer',       s:'fresh'},
+  {id:'POT-023',name:'Tradescantia',          area:'Break Room',           s:'fresh'},
+  {id:'POT-024',name:'Pilea Peperomioides',   area:'Ruang Arsip',          s:'wilted'},
+  {id:'POT-025',name:'Calathea Medallion',    area:'Direktur Office',      s:'fresh'},
+];
+
+const ROUTES = [
+  {id:1,name:'PT Tech Nusantara',    addr:'Jl. Sudirman Kav. 52',   pots:50, st:'active'},
+  {id:2,name:'CV Maju Bersama',      addr:'Jl. HR Rasuna Said',      pots:20, st:'pending'},
+  {id:3,name:'PT Solusi Digital',    addr:'Jl. TB Simatupang No.18', pots:35, st:'pending'},
+  {id:4,name:'Kantor GovernmentX',   addr:'Jl. Gatot Subroto No.7',  pots:15, st:'pending'},
+];
+
+const CHECKLIST = [
+  {id:'c1',label:'Penyiraman semua pot',           done:false},
+  {id:'c2',label:'Pembersihan daun dari debu',     done:false},
+  {id:'c3',label:'Pruning / pemangkasan',          done:false},
+  {id:'c4',label:'Cek media tanam & kesuburan',    done:false},
+  {id:'c5',label:'Dokumentasi foto kondisi pot',   done:false},
+];
+
+let TICKETS = [
+  {id:'TKT-2026-081',client:'PT Tech Nusantara',   pot:'POT-003',issue:'Tanaman layu / mati',    sla:'4j 22m', urgent:true,  done:false},
+  {id:'TKT-2026-082',client:'PT Tech Nusantara',   pot:'POT-007',issue:'Daun menguning parah',   sla:'12j 5m', urgent:false, done:false},
+  {id:'TKT-2026-083',client:'CV Maju Bersama',     pot:'POT-A11',issue:'Hama / penyakit',        sla:'1j 38m', urgent:true,  done:false},
+  {id:'TKT-2026-084',client:'PT Solusi Digital',   pot:'POT-B04',issue:'Pot pecah / rusak',      sla:'18j 0m', urgent:false, done:false},
+  {id:'TKT-2026-085',client:'PT Tech Nusantara',   pot:'POT-012',issue:'Media tanam bermasalah', sla:'22j 15m',urgent:false, done:false},
+  {id:'TKT-2026-086',client:'Kantor GovernmentX',  pot:'POT-C02',issue:'Tanaman layu / mati',    sla:'2j 10m', urgent:true,  done:false},
+];
+
+const QR_SAMPLES = [
+  {pot:'POT-003',name:'Sansevieria',          area:'Meja Resepsionis', status:'LAYU',  client:'PT Tech Nusantara', last:'10 Agt 2026'},
+  {pot:'POT-008',name:'Philodendron',         area:'Ruang Direksi',    status:'SEGAR', client:'PT Tech Nusantara', last:'12 Agt 2026'},
+  {pot:'POT-014',name:'Ficus Lyrata',         area:'CEO Office',       status:'SEGAR', client:'PT Tech Nusantara', last:'14 Agt 2026'},
+  {pot:'POT-022',name:'Pothos Neon',          area:'Meja Developer',   status:'SEGAR', client:'PT Tech Nusantara', last:'15 Agt 2026'},
+];
+
+let currentRole = '';
+let activeTicketId = null;
+let qrIdx = 0;
+</script>
+
+<script>
+// ═══ ROLE SWITCHER ════════════════════════════════════════
+function switchRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.module').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.role-btn').forEach(btn => {
+    btn.classList.remove('bg-white','text-emerald-700','shadow','font-semibold');
+    btn.classList.add('text-slate-500');
+  });
+  const panel = document.getElementById('module-' + role);
+  if (panel) panel.classList.remove('hidden');
+  const btn = document.getElementById('btn-' + role);
+  if (btn) {
+    btn.classList.add('bg-white','text-emerald-700','shadow','font-semibold');
+    btn.classList.remove('text-slate-500');
+  }
+  const labels = {client:'Portal Klien B2B', field:'Staf Lapangan', admin:'Admin / Owner'};
+  const hdr = document.getElementById('hdr-label');
+  if (hdr) hdr.textContent = labels[role] || '';
+  if (role === 'client') renderPlants();
+  if (role === 'field')  renderField();
+  if (role === 'admin')  renderAdmin();
+}
+
+// ═══ PLANT GRID ═══════════════════════════════════════════
+function renderPlants() {
+  const g = document.getElementById('plant-grid');
+  if (!g) return;
+  g.innerHTML = PLANTS.map(p => {
+    const ok = p.s === 'fresh';
+    return `<div class="flex items-center gap-3 p-3 rounded-xl border transition-shadow hover:shadow-md
+        ${ok ? 'bg-white border-slate-100' : 'bg-amber-50 border-amber-100'}">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${ok ? 'bg-emerald-100':'bg-amber-100'}">
+        <i data-lucide="flower-2" class="${ok?'text-emerald-600':'text-amber-600'}" style="width:17px;height:17px"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between gap-1">
+          <p class="font-semibold text-slate-800 text-sm truncate">${p.name}</p>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0
+            ${ok?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${ok?'SEGAR':'LAYU'}</span>
+        </div>
+        <p class="text-xs text-slate-400 truncate">${p.id} · ${p.area}</p>
+      </div>
+    </div>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+// ═══ FIELD MODULE ═════════════════════════════════════════
+function renderField() { renderRoutes(); renderChecklist(); }
+
+function renderRoutes() {
+  const el = document.getElementById('route-list');
+  if (!el) return;
+  el.innerHTML = ROUTES.map((r,i) => {
+    const isAct = r.st === 'active', isDone = r.st === 'done';
+    return `<div onclick="setRoute(${r.id})" class="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all
+        ${isAct?'border-emerald-200 bg-emerald-50':isDone?'border-slate-100 bg-slate-50 opacity-60':'border-slate-100 bg-white hover:bg-slate-50'}">
+      <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold
+          ${isAct?'bg-emerald-600 text-white':isDone?'bg-slate-300 text-slate-500':'bg-slate-200 text-slate-600'}">
+        ${isDone ? '✓' : i+1}
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-medium text-slate-800 text-sm truncate ${isDone?'line-through':''}"> ${r.name}</p>
+        <p class="text-xs text-slate-400 truncate">${r.pots} pot · ${r.addr}</p>
+      </div>
+      ${isAct?'<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-semibold">Aktif</span>':''}
+    </div>`;
+  }).join('');
+}
+
+function renderChecklist() {
+  const el = document.getElementById('field-checklist');
+  if (!el) return;
+  el.innerHTML = CHECKLIST.map(c => `
+    <div onclick="toggleCheck('${c.id}')" class="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all
+        ${c.done?'bg-emerald-50 border-emerald-200':'bg-white border-slate-100 hover:bg-slate-50'}">
+      <div class="w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all
+          ${c.done?'bg-emerald-500 border-emerald-500':'border-slate-300'}">
+        ${c.done?'<i data-lucide="check" class="text-white" style="width:11px;height:11px"></i>':''}
+      </div>
+      <span class="text-sm ${c.done?'line-through text-slate-400':'text-slate-700'}">${c.label}</span>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function toggleCheck(id) {
+  const c = CHECKLIST.find(x => x.id === id);
+  if (c) { c.done = !c.done; renderChecklist(); }
+}
+
+function setRoute(id) {
+  ROUTES.forEach(r => { if (r.st !== 'done') r.st = r.id===id?'active':'pending'; });
+  renderRoutes();
+}
+
+function confirmFieldWork() {
+  const undone = CHECKLIST.filter(c => !c.done).length;
+  if (undone > 0) { toast(`Selesaikan dulu ${undone} item checklist!`, 'warn'); return; }
+  const act = ROUTES.find(r => r.st === 'active');
+  if (act) act.st = 'done';
+  CHECKLIST.forEach(c => c.done = false);
+  const doneEl = document.getElementById('field-done-count');
+  if (doneEl) doneEl.textContent = ROUTES.filter(r => r.st === 'done').length;
+  renderField();
+  toast('Lokasi berhasil dikonfirmasi!');
+}
+</script>
+
+<script>
+// ═══ ADMIN MODULE ═════════════════════════════════════════
+function renderAdmin() {
+  renderSlaTable();
+  const active = TICKETS.filter(t => !t.done).length;
+  const el = document.getElementById('sla-count');
+  const badge = document.getElementById('sla-badge');
+  if (el) el.textContent = active;
+  if (badge) badge.textContent = active + ' Tiket Aktif';
+}
+
+function renderSlaTable() {
+  const tbody = document.getElementById('sla-tbody');
+  if (!tbody) return;
+  const active = TICKETS.filter(t => !t.done);
+  if (active.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-14 text-slate-400">
+      <i data-lucide="check-circle-2" class="mx-auto mb-2 text-emerald-400" style="width:38px;height:38px"></i>
+      <p class="font-semibold">Semua tiket telah diselesaikan!</p>
+    </td></tr>`;
+    lucide.createIcons(); return;
+  }
+  tbody.innerHTML = active.map(t => `
+    <tr class="hover:bg-slate-50 transition-colors ${t.urgent?'bg-red-50/20':''}">
+      <td class="px-5 py-3.5">
+        <span class="font-mono text-xs font-semibold bg-slate-100 text-slate-700 px-2 py-1 rounded">${t.id}</span>
+      </td>
+      <td class="px-5 py-3.5 font-medium text-slate-800 text-sm">${t.client}</td>
+      <td class="px-5 py-3.5">
+        <span class="font-mono text-sm text-emerald-700 font-semibold">${t.pot}</span>
+      </td>
+      <td class="px-5 py-3.5 text-slate-600 text-sm">${t.issue}</td>
+      <td class="px-5 py-3.5">
+        <span class="flex items-center gap-1.5 font-semibold text-sm ${t.urgent?'text-red-600':'text-amber-600'}">
+          <i data-lucide="clock" style="width:13px;height:13px"></i> ${t.sla}
+          ${t.urgent?'<span class="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-bold">URGENT</span>':''}
+        </span>
+      </td>
+      <td class="px-5 py-3.5">
+        <span class="text-[10px] bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-semibold border border-amber-200">Menunggu</span>
+      </td>
+      <td class="px-5 py-3.5">
+        <button onclick="openAssign('${t.id}')"
+          class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors whitespace-nowrap">
+          <i data-lucide="truck" style="width:12px;height:12px"></i> Tugaskan & Ganti
+        </button>
+      </td>
+    </tr>`).join('');
+  lucide.createIcons();
+}
+
+function openAssign(id) {
+  activeTicketId = id;
+  const t = TICKETS.find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('assign-id').textContent = 'Tiket: ' + t.id;
+  document.getElementById('assign-info').innerHTML = `
+    <p><span class="font-semibold text-slate-700">Klien:</span> ${t.client}</p>
+    <p><span class="font-semibold text-slate-700">Pot:</span> ${t.pot}</p>
+    <p><span class="font-semibold text-slate-700">Kendala:</span> ${t.issue}</p>
+    <p class="font-semibold text-red-600">Sisa SLA: ${t.sla}</p>`;
+  openModal('modal-assign');
+}
+
+function resolveTicket() {
+  if (!activeTicketId) return;
+  const t = TICKETS.find(x => x.id === activeTicketId);
+  if (t) t.done = true;
+  closeModal('modal-assign');
+  renderAdmin();
+  toast('Tiket diselesaikan & kurir ditugaskan!');
+}
+
+// ═══ MODALS ═══════════════════════════════════════════════
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.remove('hidden'); lucide.createIcons(); }
+  if (id === 'modal-qr') resetQr();
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('hidden');
+}
+
+// ═══ SLA FORM ═════════════════════════════════════════════
+function submitSla(e) {
+  e.preventDefault();
+  const pot = document.getElementById('sla-pot').value;
+  if (!pot) { toast('Pilih ID Pot terlebih dahulu!', 'warn'); return; }
+  closeModal('modal-sla');
+  toast('Tiket SLA berhasil dikirim!');
+}
+
+// ═══ ESG ══════════════════════════════════════════════════
+function downloadEsg() {
+  closeModal('modal-esg');
+  toast('ESG Report sedang diunduh...');
+}
+
+// ═══ FILE PREVIEW ═════════════════════════════════════════
+function previewImg(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('img-preview').classList.remove('hidden');
+    document.getElementById('upload-zone').classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPreview() {
+  document.getElementById('img-preview').classList.add('hidden');
+  document.getElementById('upload-zone').classList.remove('hidden');
+  document.getElementById('file-inp').value = '';
+}
+
+// ═══ QR SCANNER ═══════════════════════════════════════════
+function resetQr() {
+  const r = document.getElementById('qr-result');
+  if (r) r.classList.add('hidden');
+  const m = document.getElementById('qr-msg');
+  if (m) m.textContent = 'Menunggu QR Code...';
+}
+
+function simulateScan() {
+  const msg = document.getElementById('qr-msg');
+  if (msg) msg.textContent = 'Memproses...';
+  setTimeout(() => {
+    const d = QR_SAMPLES[qrIdx % QR_SAMPLES.length]; qrIdx++;
+    const ok = d.status === 'SEGAR';
+    document.getElementById('qr-data').innerHTML = `
+      <div class="flex justify-between"><span class="text-slate-500">ID Pot</span><span class="font-bold text-slate-800">${d.pot}</span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Jenis</span><span class="font-medium">${d.name}</span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Area</span><span class="font-medium">${d.area}</span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Status</span>
+        <span class="font-bold text-[11px] px-2 py-0.5 rounded-full ${ok?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${d.status}</span>
+      </div>
+      <div class="flex justify-between"><span class="text-slate-500">Klien</span><span class="font-medium">${d.client}</span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Servis Terakhir</span><span class="font-medium">${d.last}</span></div>`;
+    document.getElementById('qr-result').classList.remove('hidden');
+    if (msg) msg.textContent = 'QR Terdeteksi ✓';
+    lucide.createIcons();
+  }, 900);
+}
+
+// ═══ TOAST ════════════════════════════════════════════════
+let toastTimer;
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  const msgEl = document.getElementById('toast-msg');
+  if (!el) return;
+  const warn = type === 'warn';
+  el.className = `fixed bottom-6 right-6 z-50 flex items-center gap-3 text-white text-sm px-5 py-3 rounded-xl shadow-xl fade-in max-w-xs ${warn?'bg-amber-500':'bg-slate-800'}`;
+  icon.setAttribute('data-lucide', warn ? 'alert-triangle' : 'check-circle');
+  msgEl.textContent = msg;
+  el.classList.remove('hidden');
+  lucide.createIcons();
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add('hidden'), 3500);
+}
+
+// ═══ INIT ═════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  switchRole('client');
+});
+</script>
+</body>
+</html>
